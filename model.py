@@ -7,7 +7,11 @@ import numpy as np
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import ElasticNet, Ridge, Lasso, LinearRegression
-from sklearn.ensemble import RandomForestRegressor, AdaBoostRegressor, GradientBoostingRegressor
+from sklearn.ensemble import (
+    RandomForestRegressor,
+    AdaBoostRegressor,
+    GradientBoostingRegressor,
+)
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.svm import SVR
 from sklearn.neighbors import KNeighborsRegressor
@@ -22,11 +26,13 @@ import logging
 logging.basicConfig(level=logging.WARN)
 logger = logging.getLogger(__name__)
 
+
 def eval_metrics(actual, pred):
     rmse = np.sqrt(mean_squared_error(actual, pred))
     mae = mean_absolute_error(actual, pred)
     r2 = r2_score(actual, pred)
     return rmse, mae, r2
+
 
 if __name__ == "__main__":
     warnings.filterwarnings("ignore")
@@ -43,17 +49,45 @@ if __name__ == "__main__":
 
     # Define a list of regression algorithms and their corresponding hyperparameters
     regressors = [
-        {"name": "ElasticNet", "model": ElasticNet(), "params": {"alpha": 0.5, "l1_ratio": 0.5}},
+        {
+            "name": "ElasticNet",
+            "model": ElasticNet(),
+            "params": {"alpha": 0.5, "l1_ratio": 0.5},
+        },
         {"name": "LinearRegression", "model": LinearRegression(), "params": {}},
         {"name": "Ridge", "model": Ridge(), "params": {"alpha": 1.0}},
         {"name": "Lasso", "model": Lasso(), "params": {"alpha": 1.0}},
-        {"name": "RandomForest", "model": RandomForestRegressor(), "params": {"n_estimators": 100, "random_state": 42}},
-        {"name": "DecisionTree", "model": DecisionTreeRegressor(), "params": {"random_state": 42}},
+        {
+            "name": "RandomForest",
+            "model": RandomForestRegressor(),
+            "params": {"n_estimators": 100, "random_state": 42},
+        },
+        {
+            "name": "DecisionTree",
+            "model": DecisionTreeRegressor(),
+            "params": {"random_state": 42},
+        },
         {"name": "SVR", "model": SVR(), "params": {"kernel": "linear"}},
-        {"name": "KNeighbors", "model": KNeighborsRegressor(), "params": {"n_neighbors": 5}},
-        {"name": "AdaBoost", "model": AdaBoostRegressor(), "params": {"n_estimators": 50, "random_state": 42}},
-        {"name": "XGBoost", "model": XGBRegressor(), "params": {"n_estimators": 100, "learning_rate": 0.1, "random_state": 42}},
-        {"name": "GradientBoosting", "model": GradientBoostingRegressor(), "params": {"n_estimators": 100, "random_state": 42}},
+        {
+            "name": "KNeighbors",
+            "model": KNeighborsRegressor(),
+            "params": {"n_neighbors": 5},
+        },
+        {
+            "name": "AdaBoost",
+            "model": AdaBoostRegressor(),
+            "params": {"n_estimators": 50, "random_state": 42},
+        },
+        {
+            "name": "XGBoost",
+            "model": XGBRegressor(),
+            "params": {"n_estimators": 100, "learning_rate": 0.1, "random_state": 42},
+        },
+        {
+            "name": "GradientBoosting",
+            "model": GradientBoostingRegressor(),
+            "params": {"n_estimators": 100, "random_state": 42},
+        },
     ]
 
     for regressor in regressors:
@@ -80,9 +114,18 @@ if __name__ == "__main__":
             mlflow.log_metric("r2", r2)
             mlflow.log_metric("mae", mae)
 
+            # For remote server only
+
+            remote_server_only = (
+                "https://dagshub.com/Abdul-Jaweed/Cost-Analysis-Prediction.mlflow"
+            )
+            mlflow.set_tracking_uri(remote_server_only)
+
             tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
 
             if tracking_url_type_store != "file":
-                mlflow.sklearn.log_model(model, "model", registered_model_name=f"{model_name}_Prediction")
+                mlflow.sklearn.log_model(
+                    model, "model", registered_model_name=f"{model_name}_Prediction"
+                )
             else:
                 mlflow.sklearn.log_model(model, "model")
