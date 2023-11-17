@@ -1,4 +1,4 @@
-name: Continuous Integration
+name: workflow
 
 on:
     push:
@@ -9,7 +9,8 @@ on:
             -"*"
 
 jobs:
-    test:
+    integration:
+        name: Continuous Integration
         runs-on: ubuntu-latest
 
         steps:
