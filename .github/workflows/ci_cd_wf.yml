@@ -8,10 +8,9 @@ on:
         branches:
             -"*"
 
-
-job:
+jobs:
     test:
-        run-on: ubuntu-latest
+        runs-on: ubuntu-latest
 
         steps:
             - name: Check out repo code
@@ -21,7 +20,8 @@ job:
               uses: actions/setup-python@v3
               with:
                 python-version: "3.x"
-            - name: Install dependencies
+            
+            - name: Install Dependencies
               run: |
                 make install
             - name: Lint with pylint
