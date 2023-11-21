@@ -5,12 +5,9 @@ __pycache__
 *.db
 *.sqlite3
 .dockerignore
-Dockerfile
-docker-compose.yml
 README.md
 Makefile
 mlruns
 env
-data
 LICENSE
 setup.sh

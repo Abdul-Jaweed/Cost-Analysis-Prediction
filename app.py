@@ -6,6 +6,8 @@ import numpy as np
 
 app = Flask(__name__)
 
+port=5000
+
 # Load the model
 with open("model/model.pkl", "rb") as model_file:
     model = pickle.load(model_file)
@@ -53,4 +55,4 @@ def predict():
 
 
 if __name__ == "__main__":
-    app.run(port=5000)
+    app.run(host="0.0.0.0", port=port)
